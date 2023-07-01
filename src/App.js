@@ -1,15 +1,45 @@
 import "./index.css";
 import moon from "./images/icon-moon.svg";
-import iconcheck from "./images/icon-check.svg";
+import icon from "./images/icon-cross.svg";
+import { useState } from "react";
+const initialItems = [
+  {
+    id: 1,
+    description: "Complete online JavaSceipt course",
+    completed: true,
+  },
+  {
+    id: 2,
+    description: "Jog around the pack 3x",
+    completed: false,
+  },
+  {
+    id: 3,
+    description: "10 minutes meditation",
+    completed: false,
+  },
+];
+
 export default function App() {
+  const [items, setItems] = useState(initialItems);
+  function handleAddItems(item) {
+    setItems((items) => [...items, item]);
+  }
+  function handleDeleteItem(id) {
+    setItems((items) => items.filter((item) => item.id !== id));
+  }
   return (
     <div className="container">
-      <Card />
+      <Card
+        items={items}
+        onAddItems={handleAddItems}
+        onDeleteItems={handleDeleteItem}
+      />
     </div>
   );
 }
 
-function Card() {
+function Card({ items, onAddItems, onDeleteItems }) {
   return (
     <div className="card">
       <div className="bold-text-icon">
@@ -20,41 +50,71 @@ function Card() {
           <img src={moon} alt="" />
         </div>
       </div>
-      <SearchBox />
-      <TodoList />
-      <TodoList />
+      <SearchBox onAddItems={onAddItems} />
+
       <div className="outside-todo-box">
-        <TodoList />
+        {/* <TodoItem items={items} /> */}
+        <TodoList items={items} onDeleteItems={onDeleteItems} />
         <Footer />
       </div>
     </div>
   );
 }
 
-function SearchBox() {
+function SearchBox({ onAddItems }) {
+  const [description, setDescription] = useState("");
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const newItem = { description, completed: false, id: Date.now() };
+    if (!description) return;
+    console.log(newItem);
+    onAddItems(newItem);
+
+    setDescription("");
+  }
   return (
-    <div className="input-box">
+    <form className="input-box" onSubmit={handleSubmit}>
       <input
         type="text"
         className="inputb"
         placeholder="Create a new todo..."
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
       />
+    </form>
+  );
+}
+function TodoList({ items, onDeleteItems }) {
+  return (
+    <div>
+      {items.map((item) => (
+        <TodoItem item={item} onDeleteItems={onDeleteItems} key={item.id} />
+      ))}
     </div>
   );
 }
-
-function TodoList() {
+function TodoItem({ item, onDeleteItems }) {
   return (
     <>
       <div className="todo-box">
         <div className="todo">
           <div className="checktext">
             <input type="checkbox" />
-            <p className="todo-text">Complete online JavaSceipt course</p>
+            <p
+              className="todo-text"
+              style={
+                item.completed
+                  ? { textDecoration: "line-through", color: "#ccc" }
+                  : {}
+              }
+            >
+              {item.description}
+            </p>
           </div>
-          <span>
-            <img src={iconcheck} alt="" />
-          </span>
+          <button onClick={() => onDeleteItems(item.id)}>
+            <img src={icon} alt="" />
+          </button>
         </div>
       </div>
     </>
@@ -64,29 +124,29 @@ function TodoList() {
 function Footer() {
   return (
     <div>
-      <div class="two-menu-box">
-        <div class="two-menu">
+      <div className="two-menu-box">
+        <div className="two-menu">
           <p>5mins left</p>
-          <p class="">Clear Completeed</p>
+          <p className="">Clear Completeed</p>
         </div>
       </div>
 
-      <div class="todo-box2">
-        <div class="todo2">
-          <div class="checktext">
-            <p class="">5mins left</p>
+      <div className="todo-box2">
+        <div className="todo2">
+          <div className="checktext">
+            <p className="">5mins left</p>
           </div>
-          <div class="todo-menu">
+          <div className="todo-menu">
             <div>All</div>
             <div>Active</div>
             <div>Complete</div>
           </div>
-          <p class="">Clear Completeed</p>
+          <p className="">Clear Completeed</p>
         </div>
       </div>
-      <div class="todo-box-mobile">
-        <div class="todo-mobile">
-          <div class="todo-menu">
+      <div className="todo-box-mobile">
+        <div className="todo-mobile">
+          <div className="todo-menu">
             <div>All</div>
             <div>Active</div>
             <div>Complete</div>
