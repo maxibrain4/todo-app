@@ -28,18 +28,36 @@ export default function App() {
   function handleDeleteItem(id) {
     setItems((items) => items.filter((item) => item.id !== id));
   }
+  function handleToggleItem(id) {
+    setItems((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, completed: !item.completed } : item
+      )
+    );
+  }
+
   return (
     <div className="container">
       <Card
         items={items}
         onAddItems={handleAddItems}
         onDeleteItems={handleDeleteItem}
+        onToggleItems={handleToggleItem}
       />
     </div>
   );
 }
 
-function Card({ items, onAddItems, onDeleteItems }) {
+function Card({ items, onAddItems, onDeleteItems, onToggleItems }) {
+  const [sortItem, setSortItem] = useState(items);
+
+  function handleCompletdItems() {
+    setSortItem(() => sortItem.filter((item) => item.completed));
+  }
+  function handleAllItems() {
+    setSortItem(items);
+  }
+
   return (
     <div className="card">
       <div className="bold-text-icon">
@@ -54,8 +72,17 @@ function Card({ items, onAddItems, onDeleteItems }) {
 
       <div className="outside-todo-box">
         {/* <TodoItem items={items} /> */}
-        <TodoList items={items} onDeleteItems={onDeleteItems} />
-        <Footer />
+        <TodoList
+          items={items}
+          onDeleteItems={onDeleteItems}
+          onToggleItems={onToggleItems}
+        />
+        <Footer
+          items={items}
+          sortItem={sortItem}
+          handleCompletdItems={handleCompletdItems}
+          handleAllItems={handleAllItems}
+        />
       </div>
     </div>
   );
@@ -70,7 +97,6 @@ function SearchBox({ onAddItems }) {
     if (!description) return;
     console.log(newItem);
     onAddItems(newItem);
-
     setDescription("");
   }
   return (
@@ -85,22 +111,31 @@ function SearchBox({ onAddItems }) {
     </form>
   );
 }
-function TodoList({ items, onDeleteItems }) {
+function TodoList({ items, onDeleteItems, onToggleItems }) {
   return (
     <div>
       {items.map((item) => (
-        <TodoItem item={item} onDeleteItems={onDeleteItems} key={item.id} />
+        <TodoItem
+          item={item}
+          onDeleteItems={onDeleteItems}
+          onToggleItems={onToggleItems}
+          key={item.id}
+        />
       ))}
     </div>
   );
 }
-function TodoItem({ item, onDeleteItems }) {
+function TodoItem({ item, onDeleteItems, onToggleItems }) {
   return (
     <>
       <div className="todo-box">
         <div className="todo">
           <div className="checktext">
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              value={item.completed}
+              onChange={() => onToggleItems(item.id)}
+            />
             <p
               className="todo-text"
               style={
@@ -121,12 +156,14 @@ function TodoItem({ item, onDeleteItems }) {
   );
 }
 
-function Footer() {
+function Footer({ items, handleCompletdItems, handleAllItems }) {
+  const numItemCompleted = items.filter((item) => !item.completed).length;
+
   return (
     <div>
       <div className="two-menu-box">
         <div className="two-menu">
-          <p>5mins left</p>
+          <p>{numItemCompleted}items left</p>
           <p className="">Clear Completeed</p>
         </div>
       </div>
@@ -134,12 +171,14 @@ function Footer() {
       <div className="todo-box2">
         <div className="todo2">
           <div className="checktext">
-            <p className="">5mins left</p>
+            <p className="">{numItemCompleted} left</p>
           </div>
           <div className="todo-menu">
-            <div>All</div>
-            <div>Active</div>
-            <div>Complete</div>
+            <button onClick={handleAllItems}>All</button>
+            <button value="active">Active</button>
+            <button value="complete" onClick={handleCompletdItems}>
+              Complete
+            </button>
           </div>
           <p className="">Clear Completeed</p>
         </div>
@@ -147,9 +186,11 @@ function Footer() {
       <div className="todo-box-mobile">
         <div className="todo-mobile">
           <div className="todo-menu">
-            <div>All</div>
-            <div>Active</div>
-            <div>Complete</div>
+            <button onClick={() => {}}>All</button>
+            <button value="Active">Active</button>
+            <button value="complete" onClick={handleCompletdItems}>
+              Completed
+            </button>
           </div>
         </div>
       </div>
