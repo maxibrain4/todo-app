@@ -35,7 +35,9 @@ export default function App() {
       )
     );
   }
-
+  function handleClearItem() {
+    setItems([]);
+  }
   return (
     <div className="container">
       <Card
@@ -43,12 +45,19 @@ export default function App() {
         onAddItems={handleAddItems}
         onDeleteItems={handleDeleteItem}
         onToggleItems={handleToggleItem}
+        handleClearItem={handleClearItem}
       />
     </div>
   );
 }
 
-function Card({ items, onAddItems, onDeleteItems, onToggleItems }) {
+function Card({
+  items,
+  onAddItems,
+  onDeleteItems,
+  onToggleItems,
+  handleClearItem,
+}) {
   const [sortItem, setSortItem] = useState(items);
 
   function handleCompletdItems() {
@@ -82,6 +91,7 @@ function Card({ items, onAddItems, onDeleteItems, onToggleItems }) {
           sortItem={sortItem}
           handleCompletdItems={handleCompletdItems}
           handleAllItems={handleAllItems}
+          handleClearItem={handleClearItem}
         />
       </div>
     </div>
@@ -156,7 +166,12 @@ function TodoItem({ item, onDeleteItems, onToggleItems }) {
   );
 }
 
-function Footer({ items, handleCompletdItems, handleAllItems }) {
+function Footer({
+  items,
+  handleCompletdItems,
+  handleAllItems,
+  handleClearItem,
+}) {
   const numItemCompleted = items.filter((item) => !item.completed).length;
 
   return (
@@ -164,7 +179,9 @@ function Footer({ items, handleCompletdItems, handleAllItems }) {
       <div className="two-menu-box">
         <div className="two-menu">
           <p>{numItemCompleted}items left</p>
-          <p className="">Clear Completeed</p>
+          <button className="" onClick={handleClearItem}>
+            Clear Completed
+          </button>
         </div>
       </div>
 
@@ -180,7 +197,9 @@ function Footer({ items, handleCompletdItems, handleAllItems }) {
               Complete
             </button>
           </div>
-          <p className="">Clear Completeed</p>
+          <button className="" onClick={handleClearItem}>
+            Clear Completed
+          </button>
         </div>
       </div>
       <div className="todo-box-mobile">
