@@ -190,19 +190,19 @@ function Footer({
           <div className="checktext">
             <p className="">{numItemCompleted} left</p>
           </div>
-          <div className="todo-menu">
+          {/* <div className="todo-menu">
             <button onClick={handleAllItems}>All</button>
             <button value="active">Active</button>
             <button value="complete" onClick={handleCompletdItems}>
               Complete
             </button>
-          </div>
+          </div> */}
           <button className="" onClick={handleClearItem}>
             Clear Completed
           </button>
         </div>
       </div>
-      <div className="todo-box-mobile">
+      {/* <div className="todo-box-mobile">
         <div className="todo-mobile">
           <div className="todo-menu">
             <button onClick={() => {}}>All</button>
@@ -212,7 +212,7 @@ function Footer({
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
