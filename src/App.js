@@ -1,7 +1,7 @@
 import "./index.css";
 import moon from "./images/icon-moon.svg";
 import icon from "./images/icon-cross.svg";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 const initialItems = [
   {
     id: 1,
@@ -22,14 +22,35 @@ const initialItems = [
 
 export default function App() {
   const [items, setItems] = useState(initialItems);
+
+  useEffect(() => {
+    // Load items from local storage when the component mounts
+    const storedItems = localStorage.getItem("todoItems");
+    if (storedItems) {
+      setItems(JSON.parse(storedItems));
+    } else {
+      setItems(initialItems); // If no stored items, use the initialItems
+    }
+  }, []);
+
+  function updateLocalStorage(updatedItems) {
+    localStorage.setItem("todoItems", JSON.stringify(updatedItems));
+  }
   function handleAddItems(item) {
     setItems((items) => [...items, item]);
+    updateLocalStorage([...items, item]);
   }
   function handleDeleteItem(id) {
     setItems((items) => items.filter((item) => item.id !== id));
+    updateLocalStorage(items.filter((item) => item.id !== id));
   }
   function handleToggleItem(id) {
     setItems((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, completed: !item.completed } : item
+      )
+    );
+    updateLocalStorage(
       items.map((item) =>
         item.id === id ? { ...item, completed: !item.completed } : item
       )
