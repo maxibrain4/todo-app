@@ -24,12 +24,11 @@ export default function App() {
   const [items, setItems] = useState(initialItems);
 
   useEffect(() => {
-    // Load items from local storage when the component mounts
     const storedItems = localStorage.getItem("todoItems");
     if (storedItems) {
       setItems(JSON.parse(storedItems));
     } else {
-      setItems(initialItems); // If no stored items, use the initialItems
+      setItems(initialItems);
     }
   }, []);
 
